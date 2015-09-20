@@ -3,18 +3,24 @@
 #include "cubePattern.h"
 
 #include "fading.h"
+#include "planes.h"
+#include "fallingPlanes.h"
 
 #include <stdint.h>
 
-fading* pattern;
+fading* fadingPattern;
+planes* planesPattern;
+fallingPlanes* fallingPlanesPattern;
+
 cubeGFX cube;
-uint8_t PIXEL_RGB[NUM_STRIPS * NUM_LEDS_PER_STRIP * 3];
 
 bool onlinePressed=false;
 bool lastOnline=true;
 SYSTEM_MODE(SEMI_AUTOMATIC);  //don't connect to the internet on boot
 #define BUTTON D6 //press this button to connect to the internet
 #define MODE D4
+
+uint8_t PIXEL_RGB[NUM_STRIPS * NUM_LEDS_PER_STRIP * 3];
 
 void setup() {
   randomSeed(analogRead(A0));
@@ -37,14 +43,16 @@ void setup() {
   pinMode(D7, OUTPUT);
   digitalWrite(D7, HIGH);
 
-  pattern = new fading();
+  fadingPattern = new fading();
+  planesPattern = new planes();
+  fallingPlanesPattern = new fallingPlanes();
 }
 
-    uint8_t pixel = 0;
+uint8_t pixel = 0;
 
 void loop() {
 //   Serial.println("Loop-Start");
-    pattern->doFrame();
+    fallingPlanesPattern->doFrame();
 
     checkCloudButton();
     show();
@@ -99,8 +107,6 @@ void checkCloudButton()
 }
 
 void show() {
-    memcpy(PIXEL_RGB, pattern->cube.PIXEL_RGB, NUM_STRIPS * NUM_LEDS_PER_STRIP * 3 * sizeof(uint8_t));
-
     uint8_t *ptrA,*ptrB,*ptrC,*ptrD,*ptrE,*ptrF,*ptrG,*ptrH;
     uint8_t mask;
     uint8_t c=0,a=0,b=0,j=0;

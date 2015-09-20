@@ -33,7 +33,7 @@ struct Color {
 
   RGBv HSVtoRGB(HSV in) {
     double h, s, v;
-    double r, g, b;
+    double r = 0, g = 0, b = 0;
 
     h = (double)in.h / 255.;
     s = (double)in.s / 255.;
@@ -90,8 +90,5 @@ public:
   void drawCube(Point center, uint8_t radius, Color c, bool filled = false);
   void drawFilledCube(Point p1, Point p2, Color c);
   void drawFilledCube(Point center, uint8_t radius, Color c);
-
-  uint8_t PIXEL_RGB[NUM_STRIPS * NUM_LEDS_PER_STRIP * 3];
-
 };
 #endif

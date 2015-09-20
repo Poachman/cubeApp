@@ -49,85 +49,69 @@ void cubeGFX::drawBackground(Color c) {
   }
 }
 
-void cubeGFX::drawLine(Point p, Point q, Color c) {
-  this->drawLine(p.x, p.y, p.z, q.x, p.y, p.z, c);
-}
+void cubeGFX::drawLine(Point p1, Point p2, Color col) {
+  float dx, dy, dz, l, m, n, dx2, dy2, dz2, i, x_inc, y_inc, z_inc, err_1, err_2;
+  Point currentPoint = Point(p1.x, p1.y, p1.z);
+  dx = p2.x - p1.x;
+  dy = p2.y - p1.y;
+  dz = p2.z - p1.z;
+  x_inc = (dx < 0) ? -1 : 1;
+  l = abs(dx);
+  y_inc = (dy < 0) ? -1 : 1;
+  m = abs(dy);
+  z_inc = (dz < 0) ? -1 : 1;
+  n = abs(dz);
+  dx2 = l * 2;
+  dy2 = m * 2;
+  dz2 = n * 2;
 
-void cubeGFX::drawLine(uint8_t x1, uint8_t y1, uint8_t z1, uint8_t x2, uint8_t y2, uint8_t z2, Color col) {
-  Point currentPoint = Point(x1, y1, z1);
-
-  int dx = x2 - x1;
-  int dy = y2 - y1;
-  int dz = z2 - z1;
-  int x_inc = (dx < 0) ? -1 : 1;
-  int l = abs(dx);
-  int y_inc = (dy < 0) ? -1 : 1;
-  int m = abs(dy);
-  int z_inc = (dz < 0) ? -1 : 1;
-  int n = abs(dz);
-  int dx2 = l << 1;
-  int dy2 = m << 1;
-  int dz2 = n << 1;
-
-  if((l >= m) && (l >= n)) {
-    int err_1 = dy2 - l;
-    int err_2 = dz2 - l;
-
-    for(int i = 0; i < l; i++) {
+  if ((l >= m) && (l >= n)) {
+    err_1 = dy2 - l;
+    err_2 = dz2 - l;
+    for (i = 0; i < l; i++) {
       this->drawVoxel(currentPoint, col);
-
-      if(err_1 > 0) {
+      if (err_1 > 0) {
         currentPoint.y += y_inc;
         err_1 -= dx2;
       }
-
-      if(err_2 > 0) {
+      if (err_2 > 0) {
         currentPoint.z += z_inc;
         err_2 -= dx2;
       }
-
       err_1 += dy2;
       err_2 += dz2;
       currentPoint.x += x_inc;
     }
-  } else if((m >= l) && (m >= n)) {
-    int err_1 = dx2 - m;
-    int err_2 = dz2 - m;
-
-    for(int i = 0; i < m; i++) {
+  } else if ((m >= l) && (m >= n)) {
+    err_1 = dx2 - m;
+    err_2 = dz2 - m;
+    for (i = 0; i < m; i++) {
       this->drawVoxel(currentPoint, col);
-
-      if(err_1 > 0) {
+      if (err_1 > 0) {
         currentPoint.x += x_inc;
         err_1 -= dy2;
       }
-
-      if(err_2 > 0) {
+      if (err_2 > 0) {
         currentPoint.z += z_inc;
         err_2 -= dy2;
       }
-
       err_1 += dx2;
       err_2 += dz2;
       currentPoint.y += y_inc;
     }
   } else {
-    int err_1 = dy2 - n;
-    int err_2 = dx2 - n;
-
-    for(int i = 0; i < n; i++) {
+    err_1 = dy2 - n;
+    err_2 = dx2 - n;
+    for (i = 0; i < n; i++) {
       this->drawVoxel(currentPoint, col);
-
-      if(err_1 > 0) {
+      if (err_1 > 0) {
         currentPoint.y += y_inc;
         err_1 -= dz2;
       }
-
-      if(err_2 > 0) {
+      if (err_2 > 0) {
         currentPoint.x += x_inc;
         err_2 -= dz2;
       }
-
       err_1 += dy2;
       err_2 += dx2;
       currentPoint.z += z_inc;
@@ -135,6 +119,10 @@ void cubeGFX::drawLine(uint8_t x1, uint8_t y1, uint8_t z1, uint8_t x2, uint8_t y
   }
 
   this->drawVoxel(currentPoint, col);
+}
+
+void cubeGFX::drawLine(uint8_t x1, uint8_t y1, uint8_t z1, uint8_t x2, uint8_t y2, uint8_t z2, Color col) {
+  this->drawLine(Point(x1, y1, z1), Point(x2, y2, z2), col);
 }
 
 void cubeGFX::drawCircle(Point center, Axis axis, uint8_t radius, Color c, bool filled) {
